@@ -1,0 +1,348 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SERS - Speech Emotion Recognition System</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+
+    body {
+        background-image: url('{% static "images/spheres-4607805_192.png" %}');
+        background-repeat: no-repeat;
+        background-size: cover;
+        font-family: "Poppins", sans-serif;
+    }
+
+    button,
+    input::file-selector-button {
+        padding: 20px;
+        border: none;
+        border-radius: 3px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .mainsection,
+    .container,
+    .aboutcent,
+    .imgsec {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    button:hover {
+        background: linear-gradient(#431afb, #3e0189);
+    }
+
+    #prediction-result,
+    #chosen-file,
+    #recorded-file {
+        margin-top: 20px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .record-btn{
+        background: linear-gradient(#4870ff, #5e37fd);
+        color: #fff;
+        border-radius: 10px;
+        margin: 10px;
+        width: 300px;
+    }
+    .stop-btn {
+        background: linear-gradient(#4870ff, #5e37fd);
+        color: #ff0000;
+        border-radius: 10px;
+        margin: 10px;
+        width: 300px;
+    }
+
+    input::file-selector-button {
+        font-weight: bold;
+        color: #fff;
+        background-color: #335ffd;
+        background: linear-gradient(#525252, #262626);
+        width: 150px;
+        font-size: 20px;
+    }
+
+    input::file-selector-button:hover {
+        background: linear-gradient(#7912ff, #2d0169);
+    }
+
+    .container {
+        padding: 40px;
+    }
+
+    .heads {
+        font-size: 50px;
+        color: #335ffd;
+    }
+
+    button {
+        width: 300px;
+        background: linear-gradient(#4870ff, #5e37fd);
+        color: #fff;
+        border-radius: 10px;
+    }
+
+    button:hover {
+        background: linear-gradient(#431afb, #3e0189);
+    }
+
+    #prediction-result {
+        margin-top: 20px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #ff5722;
+    }
+
+    #chosen-file {
+        margin-top: 10px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #2196F3;
+    }
+
+    input[type="file"] {
+        width: 400px; /* Increase the width */
+        font-size: 20px; /* Increase the font size */
+        padding: 15px; /* Add more padding for a bigger button */
+        background-color: #335ffd;
+        color: #fff;
+        border-radius: 5px;
+        background: linear-gradient(#525252, #262626);
+    }
+    button[type="submit"] {
+        width: 350px; /* Increase the width */
+        font-size: 22px; /* Increase the font size */
+        padding: 15px; /* Add more padding for a bigger button */
+        background: linear-gradient(#4870ff, #5e37fd);
+        color: #fff;
+        border-radius: 10px;
+    }
+
+    nav {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    nav ul {
+        display: flex;
+        list-style: none;
+    }
+
+    .recording {
+        background-color: #ff5722 !important; /* Change the color as needed */
+        color: #fff;
+    }
+
+    nav ul li {
+        margin: 0 15px;
+    }
+
+    nav ul button {
+        padding: 10px 20px;
+        background: #262626;
+        color: #fff;
+        border-radius: 5px;
+        transition: background 0.3s;
+    }
+
+    nav ul button:hover {
+        background: #335ffd;
+    }
+
+    .aboutcent {
+        text-align: justify;
+    }
+
+    .logo {
+        font-size: 30px;
+        position: absolute;
+        top: 20px;
+        left: 40px;
+        color: #431afb;
+    }
+</style>
+
+<body>
+    <h1 class="logo">SERS</h1>
+    <nav>
+        <ul>
+            <li><button onclick="location.href='#home';">Home</button></li>
+            <li><button onclick="location.href='#about';">About</button></li>
+            <li><button onclick="location.href='#how-to-use';">How to Use</button></li>
+            <li><button onclick="location.href='#logout';">Logout</button></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1 class="heads">SERS - Speech Emotion Recognition System</h1>
+
+        <form id="upload-form" action="{% url 'upload_audio' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="audio_file" accept="audio/*">
+            <button type="submit">Upload and Predict</button>
+        </form>
+        <div id="chosen-file"></div>
+<br><br><br>
+        <!-- Audio Recording Section -->
+        <h2>Or Record Real time AudioAudio</h2>
+<div style="display: flex; align-items: center;">
+    <button class="record-btn" id="record-btn">Record Audio</button>
+    <span id="timer" style="font-size: 24px; margin-right: 15px;">00:00</span>
+</div>
+<button class="stop-btn" id="stop-btn" disabled>Stop Recording</button>
+
+        <div id="recorded-file"></div>
+        <button id="upload-recorded-btn" disabled>Predict Recorded Audio</button>
+        <div id="prediction-result"></div>
+    </div>
+
+    <div class="aboutcent">
+        <section id="about">
+            <h1>About</h1>
+            <p>The Speech Emotion Recognition System (SERS) leverages advanced machine learning algorithms to analyze audio input and identify the speaker's emotional tone</p>
+        </section>
+
+        <section id="how-to-use">
+            <h1>How to Use</h1>
+            <p>To use SERS, simply upload an audio file or record a new one, then click the predict button</p>
+        </section>
+    </div>
+
+    <!-- Lottie Animations -->
+    <div class="imgsec">
+        <div class="imgkk">
+            <dotlottie-player src="https://lottie.host/fc4bf81f-a745-4a23-b28b-97b77bd441a0/MifipYlg5j.json" style="width: 300px; height: 300px" loop autoplay></dotlottie-player>
+            <dotlottie-player src="https://lottie.host/ac94298a-94a4-4a76-b28c-0035223763bc/22SrmVyiuj.json" style="width: 200px; height: 200px" loop autoplay></dotlottie-player>
+            <dotlottie-player src="https://lottie.host/b5ba2378-ace6-41a3-9a48-84a27d6d2c34/lR0NA3X5A0.json" style="width: 300px; height: 300px" loop autoplay></dotlottie-player>
+        </div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+        let recordedBlob = null;
+
+        let timerInterval;
+        let seconds = 0;
+
+
+        const recordButton = document.getElementById('record-btn');
+        const stopButton = document.getElementById('stop-btn');
+        const uploadRecordedButton = document.getElementById('upload-recorded-btn');
+        const recordedFileElement = document.getElementById('recorded-file');
+        const timerElement = document.getElementById('timer');
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        // Start the timer
+        function startTimer() {
+            timerElement.textContent = "00:00"; // Reset timer display
+            seconds = 0;
+            timerInterval = setInterval(() => {
+                seconds++;
+                timerElement.textContent = formatTime(seconds);
+            }, 1000);
+        }
+        
+        // Stop the timer
+        function stopTimer() {
+            clearInterval(timerInterval); // Stop the timer interval
+        }
+        
+        recordButton.addEventListener('click', () => {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.start();
+                    recordedChunks = [];
+                    startTimer(); // Start the timer when recording begins
+        
+                    mediaRecorder.ondataavailable = event => {
+                        if (event.data.size > 0) recordedChunks.push(event.data);
+                    };
+        
+                    mediaRecorder.onstop = () => {
+                        recordedBlob = new Blob(recordedChunks, { type: 'audio/wav' });
+                        const audioURL = URL.createObjectURL(recordedBlob);
+                        recordedFileElement.innerHTML = `<p>Recorded File: <a href="${audioURL}" target="_blank">Play</a></p>`;
+                        uploadRecordedButton.disabled = false;
+                        stopTimer(); // Stop the timer when recording ends
+        
+                        // Reset Stop Button color
+                        stopButton.style.backgroundColor = ''; // Reset to default after recording
+                    };
+        
+                    // Change button color and state when recording starts
+                    recordButton.classList.add('recording');
+                    recordButton.disabled = true;
+                    stopButton.disabled = false;
+        
+                    // Change Stop Button color to red when recording starts
+                    stopButton.style.backgroundColor = '#ff0000'; // Red color
+                })
+                .catch(error => {
+                    console.error('Error accessing microphone:', error);
+                });
+        });
+        
+        // Stop recording
+        stopButton.addEventListener('click', () => {
+            if (mediaRecorder) {
+                mediaRecorder.stop();
+                recordButton.classList.remove('recording');
+                recordButton.disabled = false;
+                stopButton.disabled = true;
+                stopTimer(); // Stop the timer
+        
+                // Reset Stop Button color to default after stop
+                stopButton.style.backgroundColor = ''; 
+            }
+        });
+
+        // Handle uploading the recorded audio
+        uploadRecordedButton.addEventListener('click', () => {
+            if (!recordedBlob) {
+                alert("Please record audio before uploading.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('audio_file', recordedBlob, 'recorded_audio.wav');
+
+            fetch("{% url 'upload_audio' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("prediction-result").innerText = "Predicted Emotion: " + data.predicted_emotion;
+            })
+            .catch(error => {
+                console.error('Error uploading recorded audio:', error);
+            });
+        });
+    </script>
+</body>
+
+</html>

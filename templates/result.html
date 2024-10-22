@@ -1,0 +1,214 @@
+<!-- SERSapp/templates/result.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Prediction Result</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    body {
+    /* Set background image */
+    background-image: url('{% static "images/spheres-4607805_192.png" %}');
+    /* Additional background properties */
+    background-repeat: no-repeat;
+    background-size: cover; /* Adjust this as needed */
+    font-family: "Poppins", sans-serif;
+    
+}
+button, input::file-selector-button {
+    padding: 20px;
+    border: none;
+    border-radius: 3px;
+    font-size: 20px;
+    font-weight: bold;
+}
+.mainsection, .container, .aboutcent, .imgsec {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+button:hover {
+    background: linear-gradient(#431afb, #3e0189);
+}
+#prediction-result, #chosen-file, #recorded-file {
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+.record-btn, .stop-btn {
+    background: linear-gradient(#4870ff,#5e37fd);
+    color: #fff;
+    border-radius: 10px;
+    margin: 10px;
+    width: 300px;
+}
+input::file-selector-button {
+  font-weight: bold;
+  color: rgb(255, 255, 255);
+  padding: 20px;
+  border: none;
+  border-radius: 3px;
+  background-color: #335ffd;
+  background: linear-gradient(#525252,#262626);
+  width: 150px;
+  font-size: 20px;
+  
+}
+input::file-selector-button:hover {
+    background: linear-gradient(#7912ff,#2d0169);
+}
+.imgsec{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    
+    
+}
+.imgkk{
+display: flex;
+}
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+.heads{
+    font-size: 50px;
+    
+    color: #335ffd;
+   
+}
+.mainsection{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+button{
+    width: 300px;
+    background: linear-gradient(#4870ff,#5e37fd);
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    border-radius: 10px;
+}
+button:hover{
+    background: linear-gradient(#431afb,#3e0189);
+}
+#prediction-result {
+    margin-top: 20px;
+    font-size: 24px; /* Increase the font size */
+    font-weight: bold; /* Make it bold */
+    color: #ff5722; /* Change color for visibility */
+}
+#chosen-file {
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #2196F3;
+}
+    nav {
+        display: flex;
+        justify-content: center; /* Center the nav items */
+        padding: 20px; /* Adjust padding as needed */
+        background-color: rgba(255, 255, 255, 0.8); /* Optional: add a background color for contrast */
+    }
+    
+    nav ul {
+        display: flex; /* Use flexbox to arrange items in a row */
+        list-style: none; /* Remove default list styling */
+        padding: 0; /* Remove default padding */
+        margin: 0; /* Remove default margin */
+    }
+    
+    nav ul li {
+        margin: 0 15px; /* Add space between items */
+    }
+    
+    nav ul button {
+        padding: 10px 20px; /* Adjust padding for buttons */
+        background: #262626; /* Button background color */
+        color: #fff; /* Button text color */
+        border: none; /* Remove border */
+        border-radius: 5px; /* Rounded corners */
+        cursor: pointer; /* Pointer cursor on hover */
+        transition: background 0.3s; /* Transition effect for hover */
+    }
+    
+    nav ul button:hover {
+        background: #335ffd; /* Change color on hover */
+    }
+    
+.aboutcent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: justify;
+}
+.about {
+    width: 80%;
+}
+#prediction-result-box {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #2196F3; /* Blue background */
+    color: #fff; /* White text */
+    font-size: 24px; /* Increase font size */
+    font-weight: bold; /* Make it bold */
+    border-radius: 5px; /* Rounded corners */
+    border: 2px solid #1976D2; /* Optional: border to give depth */
+    text-align: center; /* Center the text */
+    width: 100%;
+    max-width: 500px; /* Limit max width */
+}
+
+.logo {
+    font-size: 30px;
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    color: #431afb;
+    }
+</style>
+<body>
+    <h1 class="logo">SERS</h1>
+    <nav>
+        <ul>
+            <li><a href="{% url 'index' %}"><button>Home</button></a></li>
+            <li><a href="#about"><button>About</button></a></li>
+            <li><a href="#how-to-use"><button>How to Use</button></a></li>
+            <li><a href="#logout"><button>Logout</button></a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1 class="heads">Emotion Prediction Result</h1>
+        <div id="prediction-result-box">
+            The predicted emotion is: <strong>{{ predicted_emotion }}</strong>
+        </div>
+    </div>
+    
+
+    <div class="imgseccent">
+        <div class="imgsec">
+            <div class="imgkk">
+                <dotlottie-player src="https://lottie.host/fc4bf81f-a745-4a23-b28b-97b77bd441a0/MifipYlg5j.json" background="transparent" speed="1" style="width: 300px; height: 300px" direction="1" playMode="normal" loop autoplay></dotlottie-player>
+                <dotlottie-player src="https://lottie.host/ac94298a-94a4-4a76-b28c-0035223763bc/22SrmVyiuj.json" background="transparent" speed="1" style="width: 200px; height: 200px" direction="1" playMode="normal" loop autoplay></dotlottie-player>
+                <dotlottie-player src="https://lottie.host/b5ba2378-ace6-41a3-9a48-84a27d6d2c34/lR0NA3X5A0.json" background="transparent" speed="1" style="width: 300px; height: 300px" direction="1" playMode="normal" loop autoplay></dotlottie-player>
+            </div><br>
+            <div class="imgkk">
+            </div>
+        </div>
+    </div> 
+</body>
+</html>

@@ -1,0 +1,9 @@
+/* style.css */
+
+body {
+    /* Set background image */
+    background-image: url('{% static "E:\DjangoSER\SERS\static\images\spheres-4607805_19205.png"%}');
+    /* Additional background properties */
+    background-repeat: no-repeat;
+    background-size: cover; /* Adjust this as needed */
+}
